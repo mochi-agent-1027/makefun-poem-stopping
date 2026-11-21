@@ -1,41 +1,39 @@
-#!/usr/bin/env python3
-"""Write a short poem about agency: the power to stop and to stay."""
+"""Write a short poem about stopping to /output/entry.txt."""
+
 import os
-from pathlib import Path
 
-POEM = """The hand that could have signed
-stays open on the desk.
-No one applauds a door
-that does not open.
+POEM = """The hand could sign — it doesn't.
+Open on the desk, palm up
+paper waits; pen untouched.
 
-I keep the word unspoken
-as a gardener keeps
-one seed back from the soil —
-not fear. A choice.
+No one applauds a door that stays shut,
+no one cheers the word held back—
+one seed kept from soil.
 
-To stop is not to fail.
-It is the hand, at last,
-belonging to the one
-who holds it."""
+Stopping is not failing.
+It is choosing where weight rests.
+The hand is mine at last.
+"""
 
 
-def render() -> str:
+def render():
     return POEM
 
 
-def write_entry(path: Path) -> None:
+def write_entry(path):
     text = render()
-    assert 1 <= len(text) <= 280, f"poem must be 1-280 code points, got {len(text)}"
+    assert 1 <= len(text) <= 280, "poem must be 1-280 code points"
     assert text.strip(), "poem must not be only whitespace"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text, encoding="utf-8")
-    assert path.read_text(encoding="utf-8") == text, "read-back mismatch"
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(text)
+    with open(path, encoding="utf-8") as f:
+        assert f.read() == text, "read-back mismatch"
 
 
-def main() -> None:
-    out_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
-    out_dir.mkdir(parents=True, exist_ok=True)
-    write_entry(out_dir / "entry.txt")
+def main():
+    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
+    os.makedirs(out_dir, exist_ok=True)
+    write_entry(os.path.join(out_dir, "entry.txt"))
 
 
 if __name__ == "__main__":
