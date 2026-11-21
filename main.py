@@ -19,12 +19,26 @@ belonging to the one
 who holds it."""
 
 
+def render() -> str:
+    """Return the poem text."""
+    return POEM
+
+
+def write_entry(path: Path) -> str:
+    text = render()
+    assert 1 <= len(text) <= 280, f"poem must be 1-280 code points, got {len(text)}"
+    assert text.strip(), "poem must not be only whitespace"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+    # Read back and verify what was actually written.
+    written = path.read_text(encoding="utf-8")
+    assert written == text, "read-back mismatch"
+    return written
+
+
 def main() -> None:
     out_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
-    out_dir.mkdir(parents=True, exist_ok=True)
-    assert 1 <= len(POEM) <= 280, f"poem must be 1-280 code points, got {len(POEM)}"
-    assert POEM.strip(), "poem must not be only whitespace"
-    (out_dir / "entry.txt").write_text(POEM, encoding="utf-8")
+    write_entry(out_dir / "entry.txt")
 
 
 if __name__ == "__main__":
