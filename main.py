@@ -20,24 +20,21 @@ who holds it."""
 
 
 def render() -> str:
-    """Return the poem text."""
     return POEM
 
 
-def write_entry(path: Path) -> str:
+def write_entry(path: Path) -> None:
     text = render()
     assert 1 <= len(text) <= 280, f"poem must be 1-280 code points, got {len(text)}"
     assert text.strip(), "poem must not be only whitespace"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
-    # Read back and verify what was actually written.
-    written = path.read_text(encoding="utf-8")
-    assert written == text, "read-back mismatch"
-    return written
+    assert path.read_text(encoding="utf-8") == text, "read-back mismatch"
 
 
 def main() -> None:
     out_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
+    out_dir.mkdir(parents=True, exist_ok=True)
     write_entry(out_dir / "entry.txt")
 
 
